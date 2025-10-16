@@ -9,7 +9,7 @@ venv/
 .venv/
 
 # Allure
-allure-report/
+allure-results/
 .allure/
 
 # IDE

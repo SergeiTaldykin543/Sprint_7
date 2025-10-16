@@ -1,3 +1,8 @@
+class OrderData:
+    
+    STATUS_200 = 200
+    STATUS_201 = 201
+
 class OrderTestData:
     @staticmethod
     def get_base_order_data():
