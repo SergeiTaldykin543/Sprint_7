@@ -1,9 +1,3 @@
-class OrderData:
-    # Status codes
-    STATUS_200 = 200
-    STATUS_201 = 201
-
-
 class OrderTestData:
     @staticmethod
     def get_base_order_data():
@@ -24,5 +18,12 @@ class OrderTestData:
         if colors:
             data["color"] = colors
         return data
-           
-  
+    
+    @staticmethod
+    def get_color_combinations():
+        return [
+            (["BLACK"], "один цвет BLACK"),
+            (["GREY"], "один цвет GREY"), 
+            (["BLACK", "GREY"], "оба цвета"),
+            ([], "без цвета")
+        ]

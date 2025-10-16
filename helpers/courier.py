@@ -6,13 +6,16 @@ from urls.api_urls import ApiUrls
 
 
 class CourierHelper:
-    def generate_random_string(self, length):
+    
+    @staticmethod
+    def generate_random_string(length):
         letters = string.ascii_lowercase
         return ''.join(random.choice(letters) for _ in range(length))
 
-    def create_unique_courier(self):
+    @staticmethod
+    def create_unique_courier():
         with allure.step('Генерация уникальных данных курьера'):
-            login = f"ninja_{self.generate_random_string(6)}"
+            login = f"ninja_{CourierHelper.generate_random_string(6)}"
             password = "1234"
             first_name = "saske"
 
@@ -29,7 +32,8 @@ class CourierHelper:
             return login, password
         return None, None
 
-    def login_courier(self, login, password):
+    @staticmethod
+    def login_courier(login, password):
         with allure.step(f'Авторизация курьера {login}'):
             payload = {
                 "login": login,
