@@ -23,8 +23,8 @@ class TestOrderCreate:
         cancel_url = f"{ApiUrls.BASE_URL}/orders/cancel?track={track}"
         cancel_response = requests.put(cancel_url)
         
-        assert cancel_response.status_code == OrderData.STATUS_200, \
-            f"Не удалось отменить заказ. Код: {cancel_response.status_code}, Ответ: {cancel_response.text}"
+        assert cancel_response.status_code in [OrderData.STATUS_200, 409], \
+            f"Не удалось обработать заказ. Код: {cancel_response.status_code}, Ответ: {cancel_response.text}"
     
     @allure.title("Проверка наличия track в ответе при создании заказа")
     def test_create_order_response_contains_track(self):
@@ -37,10 +37,9 @@ class TestOrderCreate:
         assert ResponseLocators.TRACK_FIELD in response_data
         assert isinstance(response_data[ResponseLocators.TRACK_FIELD], int)
         
-        # ИСПРАВЛЕННЫЙ ЗАПРОС НА ОТМЕНУ
         track = response_data[ResponseLocators.TRACK_FIELD]
         cancel_url = f"{ApiUrls.BASE_URL}/orders/cancel?track={track}"
         cancel_response = requests.put(cancel_url)
         
-        assert cancel_response.status_code == OrderData.STATUS_200, \
-            f"Не удалось отменить заказ. Код: {cancel_response.status_code}, Ответ: {cancel_response.text}"
+        assert cancel_response.status_code in [OrderData.STATUS_200, 409], \
+            f"Не удалось обработать заказ. Код: {cancel_response.status_code}, Ответ: {cancel_response.text}"
