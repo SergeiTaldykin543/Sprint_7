@@ -1,0 +1,45 @@
+import pytest
+import requests
+import allure
+from urls.api_urls import ApiUrls
+from data.order_data import OrderData, OrderTestData
+from data.locators import ResponseLocators
+
+
+class TestOrderCreate:
+    
+    @allure.title("Создание заказа с разными цветами: {description}")
+    @pytest.mark.parametrize('colors, description', OrderTestData.get_color_combinations())
+    def test_create_order_with_different_colors(self, colors, description):
+        payload = OrderTestData.get_order_with_colors(colors)
+        
+        response = requests.post(ApiUrls.ORDERS, json=payload)
+        
+        assert response.status_code == OrderData.STATUS_201
+        response_data = response.json()
+        assert ResponseLocators.TRACK_FIELD in response_data
+        
+        track = response_data[ResponseLocators.TRACK_FIELD]
+        cancel_url = f"{ApiUrls.BASE_URL}/orders/cancel?track={track}"
+        cancel_response = requests.put(cancel_url)
+        
+        assert cancel_response.status_code in [OrderData.STATUS_200, 409], \
+            f"Не удалось обработать заказ. Код: {cancel_response.status_code}, Ответ: {cancel_response.text}"
+    
+    @allure.title("Проверка наличия track в ответе при создании заказа")
+    def test_create_order_response_contains_track(self):
+        payload = OrderTestData.get_base_order_data()
+        
+        response = requests.post(ApiUrls.ORDERS, json=payload)
+        
+        assert response.status_code == OrderData.STATUS_201
+        response_data = response.json()
+        assert ResponseLocators.TRACK_FIELD in response_data
+        assert isinstance(response_data[ResponseLocators.TRACK_FIELD], int)
+        
+        track = response_data[ResponseLocators.TRACK_FIELD]
+        cancel_url = f"{ApiUrls.BASE_URL}/orders/cancel?track={track}"
+        cancel_response = requests.put(cancel_url)
+        
+        assert cancel_response.status_code in [OrderData.STATUS_200, 409], \
+            f"Не удалось обработать заказ. Код: {cancel_response.status_code}, Ответ: {cancel_response.text}"
